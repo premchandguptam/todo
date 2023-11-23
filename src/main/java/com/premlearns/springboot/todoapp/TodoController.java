@@ -53,12 +53,51 @@ public class TodoController {
         }
 
         String username = (String) model.get("name");
-        toDoService.addTodo(username,todo.getDescription(), LocalDate.now().plusYears(1),false);
+        toDoService.addTodo(username,todo.getDescription(), todo.getTargetDate(),false);
 
         //we will be redirecting to the list-Todos url to have prepoulated data
         // have this to retrun the listTodo jsp page will have Table without any
         // previous data
         return "redirect:list-todos";
     }
+
+
+    @RequestMapping("delete-todo")
+    public  String deleteTodo(@RequestParam int id){
+        //Delete the task using id and redirect to list-todos page
+        toDoService.deleleByID(id);
+
+        return "redirect:list-todos";
+
+    }
+
+    @RequestMapping(value = "update-todo", method = RequestMethod.GET)
+    public  String ShowUpdateTodoPage(@RequestParam int id, ModelMap model){
+        //Delete the task using id and redirect to list-todos page
+        Todo todo = toDoService.findById(id);
+        model.addAttribute("todo",todo);
+        return "todo";
+
+    }
+
+    @RequestMapping(value="update-todo", method = RequestMethod.POST)
+    public  String UpdateTodo(ModelMap model, @Valid Todo todo, BindingResult result){
+        if (result.hasErrors()){
+            return "todo";
+        }
+
+        String username = (String) model.get("name");
+        todo.setUsername(username);
+        toDoService.updateTodo(todo);
+
+        //we will be redirecting to the list-Todos url to have prepoulated data
+        // have this to retrun the listTodo jsp page will have Table without any
+        // previous data
+        return "redirect:list-todos";
+    }
+
+
+
+
 
 }

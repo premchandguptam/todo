@@ -18,11 +18,11 @@ public class Todo {
     private LocalDate targetDate;
     private boolean done;
 
-    public Todo(int id, String username, String description, LocalDate targerDate, boolean done) {
+    public Todo(int id, String username, String description, LocalDate targetDate, boolean done) {
         this.id = id;
         this.username = username;
         this.description = description;
-        this.targetDate = targerDate;
+        this.targetDate = targetDate;
         this.done = done;
 
 
@@ -57,8 +57,8 @@ public class Todo {
         return targetDate;
     }
 
-    public void setTargerDate(LocalDate targerDate) {
-        this.targetDate = targerDate;
+    public void setTargetDate(LocalDate targetDate) {
+        this.targetDate = targetDate;
     }
 
     public boolean isDone() {
@@ -76,7 +76,7 @@ public class Todo {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", description='" + description + '\'' +
-                ", targerDate=" + targetDate +
+                ", targetDate=" + targetDate +
                 ", done=" + done +
                 '}';
     }
