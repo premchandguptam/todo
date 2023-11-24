@@ -3,6 +3,8 @@ package com.premlearns.springboot.todoapp.login;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +21,16 @@ public class WelcomeController {
     //When ever you want to pass values from Controller to jsp we use Model(model map)
     @RequestMapping(value = "/",method = RequestMethod.GET)
     public String gotoWelcomePage(ModelMap model){
-        model.put("name", "Premchand");
+        model.put("name", getLoggedinUsername());
       return "welcome" ;
+    }
+
+    private String getLoggedinUsername(){
+
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+        return authentication.getName();
+
     }
 
 

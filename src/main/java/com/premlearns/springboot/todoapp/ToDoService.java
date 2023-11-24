@@ -29,7 +29,11 @@ public class ToDoService {
     }
 
     public List<Todo> findByUsername(String username){
-        return todos;
+
+        // Using a Lamda function to match the username and resturn the list of todos.
+        Predicate<? super  Todo> predicate = todo->todo.getUsername()
+                            .equalsIgnoreCase(username);
+        return todos.stream().filter(predicate).toList();
     }
 
     /**

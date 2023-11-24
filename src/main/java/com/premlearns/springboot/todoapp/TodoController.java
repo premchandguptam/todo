@@ -2,6 +2,9 @@ package com.premlearns.springboot.todoapp;
 
 
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -28,8 +31,8 @@ public class TodoController {
 
     @RequestMapping("list-todos")
     public  String listAllTodos(ModelMap model){
-
-        List<Todo> todos =toDoService.findByUsername("premchand");
+        String username = getLoggedInUsername(model);
+        List<Todo> todos =toDoService.findByUsername(username);
         model.addAttribute("todos", todos);
 
         return "listTodos";
@@ -39,11 +42,13 @@ public class TodoController {
 
     @RequestMapping(value="add-todo", method = RequestMethod.GET)
     public  String showNewTodoPage(ModelMap model){
-        String username = (String) model.get("name");
+        String username = getLoggedInUsername(model);
         Todo todo = new Todo(0,username,"",LocalDate.now().plusYears(1),false);
         model.put("todo",todo);
         return "todo";
     }
+
+
 
 
     @RequestMapping(value="add-todo", method = RequestMethod.POST)
@@ -52,7 +57,7 @@ public class TodoController {
             return "todo";
         }
 
-        String username = (String) model.get("name");
+        String username = getLoggedInUsername(model);
         toDoService.addTodo(username,todo.getDescription(), todo.getTargetDate(),false);
 
         //we will be redirecting to the list-Todos url to have prepoulated data
@@ -86,7 +91,7 @@ public class TodoController {
             return "todo";
         }
 
-        String username = (String) model.get("name");
+        String username = getLoggedInUsername(model);
         todo.setUsername(username);
         toDoService.updateTodo(todo);
 
@@ -94,6 +99,12 @@ public class TodoController {
         // have this to retrun the listTodo jsp page will have Table without any
         // previous data
         return "redirect:list-todos";
+    }
+
+    private static String getLoggedInUsername(ModelMap model) {
+        Authentication  authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 
 
