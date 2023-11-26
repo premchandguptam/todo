@@ -3,7 +3,6 @@ package com.premlearns.springboot.todoapp;
 
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,26 +12,29 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import javax.naming.Binding;
 import java.time.LocalDate;
 import java.util.List;
 
-//@Controller
+@Controller
 @SessionAttributes("name")
-public class TodoController {
+public class TodoControllerJpa {
 
     // list-todos
 
     private ToDoService toDoService;
+    private TodoRepository todoRepository;
 
-    public TodoController(ToDoService toDoService) {
-        this.toDoService = toDoService;
+    public TodoControllerJpa(TodoRepository todoRepository) {
+
+        this.todoRepository=todoRepository;
     }
 
     @RequestMapping("list-todos")
     public  String listAllTodos(ModelMap model){
         String username = getLoggedInUsername(model);
-        List<Todo> todos =toDoService.findByUsername(username);
+
+
+        List<Todo> todos =todoRepository.findByUsername(username);
         model.addAttribute("todos", todos);
 
         return "listTodos";
@@ -58,7 +60,11 @@ public class TodoController {
         }
 
         String username = getLoggedInUsername(model);
-        toDoService.addTodo(username,todo.getDescription(), todo.getTargetDate(),false);
+        todo.setUsername(username);
+        todoRepository.save(todo);
+
+        //toDoService.addTodo(username,todo.getDescription(),
+        // todo.getTargetDate(),todo.isDone());
 
         //we will be redirecting to the list-Todos url to have prepoulated data
         // have this to retrun the listTodo jsp page will have Table without any
@@ -70,7 +76,9 @@ public class TodoController {
     @RequestMapping("delete-todo")
     public  String deleteTodo(@RequestParam int id){
         //Delete the task using id and redirect to list-todos page
-        toDoService.deleleByID(id);
+
+        todoRepository.deleteById(id);
+        //toDoService.deleleByID(id);
 
         return "redirect:list-todos";
 
@@ -79,7 +87,7 @@ public class TodoController {
     @RequestMapping(value = "update-todo", method = RequestMethod.GET)
     public  String ShowUpdateTodoPage(@RequestParam int id, ModelMap model){
         //Delete the task using id and redirect to list-todos page
-        Todo todo = toDoService.findById(id);
+        Todo todo = todoRepository.findById(id).get();
         model.addAttribute("todo",todo);
         return "todo";
 
@@ -93,7 +101,8 @@ public class TodoController {
 
         String username = getLoggedInUsername(model);
         todo.setUsername(username);
-        toDoService.updateTodo(todo);
+        todoRepository.save(todo);
+        //toDoService.updateTodo(todo);
 
         //we will be redirecting to the list-Todos url to have prepoulated data
         // have this to retrun the listTodo jsp page will have Table without any

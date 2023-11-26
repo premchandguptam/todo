@@ -18,13 +18,13 @@ public class ToDoService {
 
     static{
         todos.add(new Todo(++todoid,"premchand",
-                "Spring", LocalDate.now().plusYears(1),
+                "Spring 1", LocalDate.now().plusYears(1),
                 false));
         todos.add(new Todo(++todoid,"premchand",
-                "SpringBoot", LocalDate.now().plusYears(1),
+                "SpringBoot1", LocalDate.now().plusYears(1),
                 false));
         todos.add(new Todo(++todoid,"premchand",
-                "NodeJs", LocalDate.now().plusYears(1),
+                "NodeJs1", LocalDate.now().plusYears(1),
                 false));
     }
 
